@@ -1,0 +1,30 @@
+.title {
+  width: 100%;
+  text-align: center;
+}
+
+.danger {
+  h2 {
+    color: #bb0000;
+  }
+}
+
+.attention {
+  h2 {
+    color: #bbbb00;
+  }
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.col {
+  flex: 0 1 auto;
+}
+
+.list-col {
+  margin: 15px;
+  margin-left: 30px;
+}
