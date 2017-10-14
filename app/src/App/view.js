@@ -4,9 +4,9 @@ import { Route, Link, Switch, Redirect, withRouter } from "react-router-dom";
 
 import Login from "../components/Login";
 import { loginUser } from "../components/Login/actions";
-import NavBar from "../components/NavBar";
-import Users from "../components/Users";
+import Manage from "../components/Manage";
 import Home from "../components/Home";
+import "../style/index.scss";
 
 // Mocks
 const WillMatch = () => <h1>WillMatch</h1>;
@@ -21,8 +21,8 @@ class App extends Component {
           <div id="content-container">
             <Switch>
               <Route path="/" exact component={Home} />
-              <Route path="/manage" component={Users} />
-              <Route path="/defect" component={Users} />
+              <Route path="/manage" component={Manage} />
+              {/* <Route path="/defect" component={} /> */}
               <Route component={NoMatch} />
             </Switch>
           </div>
