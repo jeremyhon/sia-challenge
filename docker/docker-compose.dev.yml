@@ -9,7 +9,7 @@ services:
       dockerfile: docker/server/Dockerfile.dev
     image: ngnix-server
     ports:
-      - '80:80' # Connect localhost 80 port to container 80 port
+      - '3000:80' # Connect localhost 80 port to container 80 port
     links: # Link services to access http://app and  http://api inside the container
       - api:api
       - app:app
@@ -23,7 +23,7 @@ services:
       context: ../.
       dockerfile: docker/app/Dockerfile.dev
     image: frontend-app
-    env_file: 
+    env_file:
       - ./../app/.env
     volumes: # For webpack dev server to use our local files
       - ./../app:/home/envuser/apphome
@@ -36,7 +36,7 @@ services:
       context: ../.
       dockerfile: docker/api/Dockerfile.dev
     image: api-server
-    env_file: 
+    env_file:
       - ./../api/.env
     links:
       - db:db
@@ -46,7 +46,7 @@ services:
       - '10000:10000'
     depends_on:
       - "db"
-  
+
   # Database
   db:
     build:

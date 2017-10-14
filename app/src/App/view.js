@@ -22,7 +22,7 @@ class App extends Component {
             <Switch>
               <Route path="/" exact component={Home} />
               <Route path="/manage" component={Manage} />
-              {/* <Route path="/defect" component={} /> */}
+              {/* <Route path="/defect" component={Defect} /> */}
               <Route component={NoMatch} />
             </Switch>
           </div>
