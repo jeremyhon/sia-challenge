@@ -178,15 +178,21 @@ class Seat{
 }
 
 class Plane{
-  constructor(flightNumber, type, seats){
+  constructor(flightNumber, type, seats, arrival, departure){
     this.flightNumber = flightNumber;
     this.type = type;
     this.seats = seats;
+    this.arrival = arrival;
+    this.departure = departure;
   }
   toJson(){
-    return this.seats.map(row => {
-      return row.map(seat => seat.toJson());
-    });
+    return {
+      seats: this.seats.map(row => {
+        return row.map(seat => seat.toJson());
+      }),
+      arrival: arrival,
+      departure: departure
+    }
   }
 }
 
@@ -239,11 +245,29 @@ function generatePlaneData(){
     var planeType = getPlaneType(planeId);
     return seatId % planeType.columns;
   }
+  function getRandomDate(from, to) {
+    from = from.getTime();
+    to = to.getTime();
+    return new Date(from + Math.random() * (to - from));
+  }
+
+  function pickRandomTimeInNextMonth(today){
+    var oneMonthLater = new Date(today.getFullYear(), today.getMonth() + 1);
+    return getRandomDate(today, oneMonthLater);
+  }
+
+  function getRandomTimeInNext24Hours(today){
+    var oneDayLater = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+    return getRandomDate(today, oneDayLater);
+  }
 
   generateLogData();
   LOG_DATA.sort((a, b) => {
     return a.timestamp - b.timestamp;
   });
+
+  var now = new Date();
+
   for (var i = 0; i < NUMBER_OF_PLANES; i++){
     var planeType = getPlaneType(i);
     var seats = new Array(planeType.rows);
@@ -253,7 +277,13 @@ function generatePlaneData(){
         seats[r][c] = new Seat([], GREEN, planeType.aisleColumns.includes(c));
       }
     }
-    PLANES.push(new Plane(i, getPlaneType(i), seats));
+    PLANES.push(new Plane(
+      i,
+      getPlaneType(i),
+      seats,
+      pickRandomTimeInNextMonth(now).getTime(),
+      getRandomTimeInNext24Hours(now).getTime()
+    ));
   }
   for (log of LOG_DATA){
     var planeId = log.flight_number;
@@ -263,10 +293,10 @@ function generatePlaneData(){
   return PLANES;
 }
 
-function getFlight(fakeFlightId){
+function getPlane(fakePlaneId){
   generatePlaneData();
-  var flightId = Math.floor(Math.random() * (fakeFlightId % NUMBER_OF_PLANES));
-  return PLANES[flightId].toJson();
+  var planeId = Math.floor(Math.random() * (fakePlaneId % NUMBER_OF_PLANES));
+  return PLANES[planeId].toJson();
 }
 
-export default getFlight
+export default getPlane
