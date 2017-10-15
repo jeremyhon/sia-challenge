@@ -112,11 +112,11 @@ class Manage extends Component {
         </header>
         <div className="flex-container">
           <div className="col seatmap-col">
-            <h2>Seating Plan</h2>
+            <div className="subHeader"><h2>Seating Plan</h2></div>
             <SeatMap rows={this.renderRows()} maxReservableSeats={0} />
           </div>
           <div className="col defect-col">
-            <h2>Defects</h2>
+            <div className="subHeader"><h2>Defects</h2></div>
             <ReactTable
               data={this.state.defects}
               columns={[
@@ -204,7 +204,7 @@ class Manage extends Component {
             />
           </div>
           <div className="col items-col">
-            <h2>Items</h2>
+            <div className="subHeader"><h2>Items</h2></div>
             <ReactTable
               data={this.getItems()}
               columns={[
