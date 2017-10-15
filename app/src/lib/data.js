@@ -1,4 +1,4 @@
-import _ from "lodash";
+var _ = require("lodash");
 var json2csv = require('json2csv');
 
 // seats
@@ -207,6 +207,8 @@ const PLANE_TYPES = [
   new PlaneType(50, 12, [3, 8])
 ];
 
+
+
 function generateLogData(NUMBER_OF_PLANES, NUMBER_OF_LOGS) {
   function pickRandomElement(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
@@ -322,15 +324,32 @@ function getPlanes(numberOfPlanes) {
   return generatePlaneData(numberOfPlanes).map(plane => plane.toJson());
 }
 
-function getCSV(NUMBER_OF_PLANES, NUMBER_OF_LOGS){
-  var logs = generateLogData(NUMBER_OF_PLANES, NUMBER_OF_LOGS);
-  var fields = ['type', 'plane_id', 'seat_number', 'timestamp', 'status'];
+function getcsv(NUMBER_OF_PLANES, NUMBER_OF_LOGS){
+  var logs = generateLogData(NUMBER_OF_PLANES, NUMBER_OF_LOGS).map(log => {
+    var date = new Date(log.timestamp);
+    var month = date.getMonth() < 10 ? "0" + date.getMonth() : "" + date.getMonth();
+    var day = date.getDate() < 10 ? "0" + date.getDate() : "" + date.getDate();
+    var hours = date.getHours() < 10 ? "0" + date.getHours() : "" + date.getHours();
+    var min = date.getMinutes() < 10 ? "0" + date.getMinutes() : "" + date.getMinutes();
+    var sec = date.getSeconds() < 10 ? "0" + date.getSeconds() : "" + date.getSeconds();
+    return {
+      type: log.type,
+      plane_number: log.flight_number,
+      seat_number: log.seat_number,
+      timestamp: `${date.getFullYear()}-${month}-${day} ${hours}:${min}:${sec}`,
+      status: log.status
+    }
+  });
+
+  var fields = ['type', 'plane_number', 'seat_number', 'timestamp', 'status'];
   var result = json2csv({ data: logs, fields: fields });
   return result;
 }
 
 window.getPlanes = getPlanes;
 window.generateLogData = generateLogData;
-window.getCSV = getCSV;
+window.getcsv = getcsv;
 
 export default getPlanes;
+
+// console.log(getcsv(100, 1000000));
