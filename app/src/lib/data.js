@@ -296,7 +296,7 @@ function generatePlaneData(NUMBER_OF_PLANES) {
     }
     var arrival = getRandomTimeInNext24Hours(now);
     var departure = getRandomTimeInNext24Hours(arrival);
-    var flightNumber = _.random(0, 10000000000);
+    var flightNumber = "SQ" + _.random(0, 10000000000);
     PLANES.push(
       new Plane(
         i,
