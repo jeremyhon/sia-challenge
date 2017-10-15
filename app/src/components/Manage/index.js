@@ -82,14 +82,7 @@ class Manage extends Component {
         });
       }
     });
-    // merge items together by quantity
-    items = _.assignWith({}, ...items, (objValue, srcValue) => {
-      if (_.isNumber(objValue)) {
-        return objValue + srcValue;
-      }
-      return srcValue;
-    });
-    // convert into table format
+    items = _.countBy(items, _.identity);
     return _.map(items, (qty, name) => ({ name, qty }));
   }
 
