@@ -270,7 +270,9 @@ function generatePlaneData(NUMBER_OF_PLANES) {
     var oneDayLater = new Date(
       time.getFullYear(),
       time.getMonth(),
-      time.getDate() + 1
+      time.getDate() + 1,
+      time.getHours(),
+      time.getMinutes()
     );
     return getRandomDate(time, oneDayLater);
   }
