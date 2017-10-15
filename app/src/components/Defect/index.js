@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import _ from "lodash";
 import moment from "moment";
+import Header from "../Header";
 import "./index.scss";
 
 class Defect extends Component {
   render() {
     return (
       <div className="defect">
-        <header>
-          <h3 className="title">Defect Details</h3>
-        </header>
+        <Header title="Defect Details" />
         <div className="flex-container">
           {_.map(data, (datum, idx) => {
             return <LineItem {...datum} key={idx} />;
@@ -21,6 +20,16 @@ class Defect extends Component {
             <div className="left-align">
               <img src="https://media.consumeraffairs.com/files/cache/reviews/united-airlines_12095_thumbnail.JPG" />
             </div>
+          </span>
+          <span className="line-item repair-span">
+            <button
+              className="btn"
+              onClick={() => {
+                this.props.history.goBack();
+              }}
+            >
+              Report Repaired
+            </button>
           </span>
         </div>
       </div>

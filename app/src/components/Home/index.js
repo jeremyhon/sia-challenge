@@ -5,6 +5,7 @@ import ReactTable from "react-table";
 import _ from "lodash";
 import moment from "moment";
 import "./index.scss";
+import Header from "../Header";
 
 class Home extends Component {
   static propTypes = {
@@ -15,12 +16,8 @@ class Home extends Component {
   render() {
     return (
       <div className="home">
-        <header>
-          <h3 className="title">
-            Upcoming Flights for Soekarno-Hatta International Airport (CGK),
-            Jakarta, Indonesia
-          </h3>
-        </header>
+        <Header title="Upcoming Flights for Soekarno-Hatta International Airport (CGK),
+        Jakarta, Indonesia" />
         <ReactTable
           data={this.props.flights}
           columns={[

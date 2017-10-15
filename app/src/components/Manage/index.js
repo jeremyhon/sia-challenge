@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
+// import { withRouter } from "react-router-dom";
 import SeatMap from "../SeatMap";
 import ReactTable from "react-table";
+import Header from "../Header";
 import "react-table/react-table.css";
 import "./index.scss";
 import HeaderCheckBox, { CellCheckBox } from "./Checkbox";
@@ -16,7 +18,8 @@ class Manage extends Component {
       params: PropTypes.shape({
         id: PropTypes.string.isRequired
       })
-    }).isRequired
+    }).isRequired,
+    history: PropTypes.object.isRequired
   };
 
   componentWillMount = () => {
@@ -107,16 +110,18 @@ class Manage extends Component {
     const isAllChecked = this.isAllChecked();
     return (
       <div>
-        <header>
-          <h1 className="title">Flight Defects</h1>
-        </header>
+        <Header title="Flight Defects" />
         <div className="flex-container">
           <div className="col seatmap-col">
-            <div className="subHeader"><h2>Seating Plan</h2></div>
+            <div className="subHeader">
+              <h2>Seating Plan</h2>
+            </div>
             <SeatMap rows={this.renderRows()} maxReservableSeats={0} />
           </div>
           <div className="col defect-col">
-            <div className="subHeader"><h2>Defects</h2></div>
+            <div className="subHeader">
+              <h2>Defects</h2>
+            </div>
             <ReactTable
               data={this.state.defects}
               columns={[
@@ -174,7 +179,7 @@ class Manage extends Component {
                 },
                 {
                   Header: HeaderCheckBox,
-                  accessor: "",
+                  accessor: "checkbox",
                   Cell: CellCheckBox,
                   maxWidth: 40,
                   getHeaderProps: () => {
@@ -195,16 +200,36 @@ class Manage extends Component {
                   }
                 }
               ]}
+              getTdProps={(state, rowInfo, column) => {
+                if (column.id === "checkbox") {
+                  return {};
+                }
+                if (_.get(rowInfo, "original.type") === "Trays") {
+                  return {
+                    onClick: () => {
+                      const location = {
+                        pathname: "/defect"
+                      };
+                      return this.props.history.push(location);
+                    }
+                  };
+                }
+                return {};
+              }}
               getTrProps={(state, rowInfo) => {
-                return {
-                  className: _.toLower(_.get(rowInfo, "original.status"))
-                };
+                if (_.get(rowInfo, "original.status")) {
+                  return {
+                    className: _.toLower(rowInfo.original.status)
+                  };
+                }
               }}
               className="-striped -highlight"
             />
           </div>
           <div className="col items-col">
-            <div className="subHeader"><h2>Items</h2></div>
+            <div className="subHeader">
+              <h2>Items</h2>
+            </div>
             <ReactTable
               data={this.getItems()}
               columns={[
