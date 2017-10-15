@@ -7,7 +7,9 @@ class Defect extends Component {
   render() {
     return (
       <div className="defect">
-        <h2>Defect Details</h2>
+        <header>
+          <h3 className="title">Defect Details</h3>
+        </header>
         <div className="flex-container">
           {_.map(data, (datum, idx) => {
             return <LineItem {...datum} key={idx} />;
