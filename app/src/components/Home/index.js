@@ -26,7 +26,15 @@ class Home extends Component {
           Upcoming Flights for Soekarno-Hatta International Airport (CGK),
           Jakarta, Indonesia
         </h3>
-        <ReactTable />
+        <ReactTable
+          data={this.state.flights}
+          columns={[
+            { Header: "Flight Number" },
+            { Header: "Flight ID" },
+            { Header: "Departure" },
+            { Header: "Arrival" }
+          ]}
+        />
       </div>
     );
   }

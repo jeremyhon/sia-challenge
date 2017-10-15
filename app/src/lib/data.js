@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _ from "lodash";
 
 // CONST
 const PLANES = [];
@@ -6,7 +6,13 @@ const NUMBER_OF_PLANES = 3;
 
 // seats
 const TYPES_OF_RED_DEFECTS = ["Reclining Seats", "Seat Belt"];
-const TYPES_OF_ORANGE_DEFECTS = ["Footrest", "Trays", "Lights", "IFE", "Aircon"];
+const TYPES_OF_ORANGE_DEFECTS = [
+  "Footrest",
+  "Trays",
+  "Lights",
+  "IFE",
+  "Aircon"
+];
 const GREEN = "GREEN";
 const ORANGE = "ORANGE";
 const YELLOW = "YELLOW";
@@ -20,18 +26,18 @@ const NUMBER_OF_LOGS = 1000;
 const TYPES_OF_STATUS = [STATUS_FIXED, STATUS_DEFECT];
 
 // CLASSES
-class PlaneType{
-  constructor(rows, columns, aisleColumns){
+class PlaneType {
+  constructor(rows, columns, aisleColumns) {
     this.rows = rows;
     this.columns = columns;
     this.aisleColumns = aisleColumns;
   }
-  get numberOfSeats(){
+  get numberOfSeats() {
     return this.rows * this.columns;
   }
 }
 
-function itemsFor(type){
+function itemsFor(type) {
   var map = new Map([
     ["Reclining Seats", ["Knob", "Seat", "Cushion"]],
     ["Seat Belt", ["Buckle", "Strap"]],
@@ -44,47 +50,49 @@ function itemsFor(type){
   return map.get(type);
 }
 
-class Defect{
-  constructor(type){
+class Defect {
+  constructor(type) {
     this.type = type;
     this.logs = [];
   }
 
-  get status(){
+  get status() {
     var latestLog = this.logs.reduce((latest, log) => {
-      if (latest && latest.timestamp > log.timestamp){
+      if (latest && latest.timestamp > log.timestamp) {
         return latest;
       } else {
         return log;
       }
     }, null);
-    if (latestLog){
+    if (latestLog) {
       return latestLog.status;
     } else {
       return "FIXED";
     }
   }
 
-  get color(){
-    function withinMonth(lastFixedLog){
+  get color() {
+    function withinMonth(lastFixedLog) {
       var actualDate = new Date();
       var dateToCheck = new Date(lastFixedLog);
-      return dateToCheck.getMonth() == actualDate.getMonth()
-          && dateToCheck.getFullYear() == actualDate.getFullYear()
+      return (
+        dateToCheck.getMonth() == actualDate.getMonth() &&
+        dateToCheck.getFullYear() == actualDate.getFullYear()
+      );
     }
 
-    if (this.logs.length === 0){
+    if (this.logs.length === 0) {
       return GREEN;
     }
     var latestLog = this.logs.reduce((latest, log) => {
-      if (latest.timestamp > log.timestamp){
+      if (latest.timestamp > log.timestamp) {
         return latest;
       } else {
         return log;
       }
     });
-    if (latestLog.status === "FIXED"){
-      if (withinMonth(latestLog)){
+    if (latestLog.status === "FIXED") {
+      if (withinMonth(latestLog)) {
         return YELLOW;
       } else {
         return GREEN;
@@ -92,27 +100,26 @@ class Defect{
     } else {
       return TYPES_OF_ORANGE_DEFECTS.includes(this.type) ? ORANGE : RED;
     }
-
   }
 
-  get timesDeferred(){
+  get timesDeferred() {
     this.logs.sort((a, b) => {
       return a.timestamp - b.timestamp;
     });
     var result = 0;
-    for (log of this.logs){
-      if (log.status === "FIXED"){
+    _.each(this.logs, log => {
+      if (log.status === "FIXED") {
         result = 0;
       } else {
         result++;
       }
-    }
+    });
     return result;
   }
 
-  get timestamp(){
+  get timestamp() {
     var latestLog = this.logs.reduce((latest, log) => {
-      if (latest && latest.timestamp > log.timestamp){
+      if (latest && latest.timestamp > log.timestamp) {
         return latest;
       } else {
         return log;
@@ -121,27 +128,27 @@ class Defect{
     return latestLog.timestamp;
   }
 
-  get items(){
+  get items() {
     return itemsFor(this.type);
   }
 
-  addLog(log){
+  addLog(log) {
     this.logs.push(log);
   }
 
-  toJson(){
+  toJson() {
     return {
       type: this.type,
       timesDeferred: this.timesDeferred,
       color: this.color,
       timestamp: this.timestamp,
       items: this.items
-    }
+    };
   }
 }
 
-class Seat{
-  constructor(defects, status, isAisle){
+class Seat {
+  constructor(defects, status, isAisle) {
     this.defects = defects;
     this.isAisle = isAisle;
   }
@@ -150,16 +157,16 @@ class Seat{
     return {
       defect: this.defects.filter(d => d.color !== GREEN).map(d => d.toJson()),
       isAisle: this.isAisle
-    }
+    };
   }
 
-  get currentDefects(){
+  get currentDefects() {
     return this.defects.filter(d => d.status === "DEFECT");
   }
 
-  defectOfType(type){
-    var defect = this.defects.filter(d => d.type === log.type);
-    if (defect.length > 0){
+  defectOfType(type) {
+    var defect = this.defects.filter(d => d.type === type);
+    if (defect.length > 0) {
       return defect[0];
     } else {
       return null;
@@ -167,7 +174,7 @@ class Seat{
   }
 
   updateWith(log) {
-    if (this.defectOfType(log.type)){
+    if (this.defectOfType(log.type)) {
       this.defectOfType(log.type).addLog(log);
     } else {
       var defect = new Defect(log.type);
@@ -177,35 +184,39 @@ class Seat{
   }
 }
 
-class Plane{
-  constructor(flightNumber, type, seats, arrival, departure){
+class Plane {
+  constructor(flightNumber, type, seats, arrival, departure) {
     this.flightNumber = flightNumber;
     this.type = type;
     this.seats = seats;
     this.arrival = arrival;
     this.departure = departure;
   }
-  toJson(){
+  toJson() {
     return {
       seats: this.seats.map(row => {
         return row.map(seat => seat.toJson());
       }),
       arrival: this.arrival,
       departure: this.departure
-    }
+    };
   }
 }
 
-const PLANE_TYPES = [new PlaneType(30, 7, [3]), new PlaneType(20, 5, [2]), new PlaneType(50, 12, [3, 8])];
+const PLANE_TYPES = [
+  new PlaneType(30, 7, [3]),
+  new PlaneType(20, 5, [2]),
+  new PlaneType(50, 12, [3, 8])
+];
 
-function generateLogData(){
-  function pickRandomElement(arr){
-    return arr[Math.floor(Math.random() * arr.length)]
+function generateLogData() {
+  function pickRandomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
   }
-  function planeType(flightNumber){
+  function planeType(flightNumber) {
     return PLANE_TYPES[flightNumber % PLANE_TYPES.length];
   }
-  function pickRandomTimeWithinLastYear(today){
+  function pickRandomTimeWithinLastYear(today) {
     function getRandomDate(from, to) {
       from = from.getTime();
       to = to.getTime();
@@ -214,12 +225,14 @@ function generateLogData(){
     var oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth());
     return getRandomDate(oneYearAgo, today);
   }
-  for (var i = 0; i < NUMBER_OF_LOGS; i++){
+  for (var i = 0; i < NUMBER_OF_LOGS; i++) {
     var flightNumber = Math.floor(Math.random() * NUMBER_OF_PLANES);
     var pType = planeType(flightNumber);
     var today = new Date();
     var log = {
-      type: pickRandomElement(TYPES_OF_RED_DEFECTS.concat(TYPES_OF_ORANGE_DEFECTS)),
+      type: pickRandomElement(
+        TYPES_OF_RED_DEFECTS.concat(TYPES_OF_ORANGE_DEFECTS)
+      ),
       flight_number: flightNumber,
       seat_number: Math.floor(Math.random() * pType.numberOfSeats),
       timestamp: pickRandomTimeWithinLastYear(today).getTime(),
@@ -229,19 +242,19 @@ function generateLogData(){
   }
 }
 
-function generatePlaneData(){
-  function getPlaneType(flightId){
+function generatePlaneData() {
+  function getPlaneType(flightId) {
     return PLANE_TYPES[flightId % PLANE_TYPES.length];
   }
-  function getSeatId(r, c, planeType){
-    return c + (r * planeType.columns);
+  function getSeatId(r, c, planeType) {
+    return c + r * planeType.columns;
   }
-  function getRow(seatId, planeId){
+  function getRow(seatId, planeId) {
     var planeType = getPlaneType(planeId);
-    var row = Math.floor(seatId/planeType.columns);
+    var row = Math.floor(seatId / planeType.columns);
     return row;
   }
-  function getCol(seatId, planeId){
+  function getCol(seatId, planeId) {
     var planeType = getPlaneType(planeId);
     return seatId % planeType.columns;
   }
@@ -251,8 +264,12 @@ function generatePlaneData(){
     return new Date(from + Math.random() * (to - from));
   }
 
-  function getRandomTimeInNext24Hours(time){
-    var oneDayLater = new Date(time.getFullYear(), time.getMonth(), time.getDate() + 1);
+  function getRandomTimeInNext24Hours(time) {
+    var oneDayLater = new Date(
+      time.getFullYear(),
+      time.getMonth(),
+      time.getDate() + 1
+    );
     return getRandomDate(time, oneDayLater);
   }
 
@@ -263,37 +280,41 @@ function generatePlaneData(){
 
   var now = new Date();
 
-  for (var i = 0; i < NUMBER_OF_PLANES; i++){
+  for (var i = 0; i < NUMBER_OF_PLANES; i++) {
     var planeType = getPlaneType(i);
     var seats = new Array(planeType.rows);
-    for (var r = 0; r < planeType.rows; r++){
+    for (var r = 0; r < planeType.rows; r++) {
       seats[r] = new Array(planeType.columns);
-      for (var c = 0; c < planeType.columns; c++){
+      for (var c = 0; c < planeType.columns; c++) {
         seats[r][c] = new Seat([], GREEN, planeType.aisleColumns.includes(c));
       }
     }
     var arrival = getRandomTimeInNext24Hours(now);
     var departure = getRandomTimeInNext24Hours(arrival);
-    PLANES.push(new Plane(
-      i,
-      getPlaneType(i),
-      seats,
-      arrival.getTime(),
-      departure.getTime()
-    ));
+    PLANES.push(
+      new Plane(
+        i,
+        getPlaneType(i),
+        seats,
+        arrival.getTime(),
+        departure.getTime()
+      )
+    );
   }
-  for (log of LOG_DATA){
+  _.each(LOG_DATA, log => {
     var planeId = log.flight_number;
     var seatId = log.seat_number;
-    PLANES[planeId].seats[getRow(seatId, planeId)][getCol(seatId, planeId)].updateWith(log);
-  }
+    PLANES[planeId].seats[getRow(seatId, planeId)][
+      getCol(seatId, planeId)
+    ].updateWith(log);
+  });
   return PLANES;
 }
 
-function getPlane(fakePlaneId){
+function getPlane(fakePlaneId) {
   generatePlaneData();
   var planeId = Math.floor(Math.random() * (fakePlaneId % NUMBER_OF_PLANES));
   return PLANES[planeId].toJson();
 }
 
-export default getPlane
+export default getPlane;
