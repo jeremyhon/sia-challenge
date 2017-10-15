@@ -6,6 +6,7 @@ import Login from "../components/Login";
 import { loginUser } from "../components/Login/actions";
 import Manage from "../components/Manage";
 import Home from "../components/Home";
+import getPlane from "../lib/data";
 import "../style/index.scss";
 
 // Mocks
@@ -20,12 +21,15 @@ class App extends Component {
         <div className="boxed">
           <div id="content-container">
             <Switch>
-              <Route path="/" exact component={Home} />
+              <Route
+                path="/"
+                exact
+                render={() => <Home getPlane={getPlane} />}
+              />
               <Route
                 path="/manage"
                 render={() => <Manage flightData={flightData} />}
               />
-              {/* <Route path="/defect" component={Defect} /> */}
               <Route component={NoMatch} />
             </Switch>
           </div>
