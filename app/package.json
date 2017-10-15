@@ -16,6 +16,7 @@
     "react-redux-form": "^1.14.1",
     "react-router-dom": "^4.2.2",
     "react-seatmap": "^0.1.2",
+    "react-table": "^6.6.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "styled-components": "^2.1.0"

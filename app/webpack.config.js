@@ -35,7 +35,7 @@ module.exports = {
       {
         test: /\.css$/,
         loader: "style-loader!css-loader",
-        exclude: /node_modules/
+        include: /node_modules/
       },
       {
         test: /\.jpe?g$|\.gif$|\.png$|^(?!.*\.inline\.svg$).*\.svg$/,

@@ -4146,6 +4146,12 @@ react-seatmap@^0.1.2:
     immutable "^3.7.5"
     react "^0.13.3"
 
+react-table@^6.6.0:
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-6.6.0.tgz#a57ffa670f8b06a18235a000315df0deaacc6cdf"
+  dependencies:
+    classnames "^2.2.5"
+
 react-timer-mixin@^0.13.3:
   version "0.13.3"
   resolved "https://registry.yarnpkg.com/react-timer-mixin/-/react-timer-mixin-0.13.3.tgz#0da8b9f807ec07dc3e854d082c737c65605b3d22"
