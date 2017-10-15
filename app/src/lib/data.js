@@ -109,7 +109,7 @@ class Defect {
         result++;
       }
     });
-    return result;
+    return result === 0 ? 0 : result - 1;
   }
 
   get timestamp() {
@@ -132,10 +132,23 @@ class Defect {
   }
 
   toJson() {
+    var color = this.color;
+    function randomlyIncrease(time){
+      if (color !== GREEN &&
+          color !== YELLOW &&
+          Math.random() < 0.05
+        ) {
+        return 2;
+      } else {
+        return time;
+      }
+    }
+    var deferred = this.timesDeferred;
+    var increased = randomlyIncrease(deferred);
     return {
       type: this.type,
-      timesDeferred: this.timesDeferred,
-      color: this.color,
+      timesDeferred: increased,
+      color: color,
       timestamp: this.timestamp,
       items: this.items
     };
