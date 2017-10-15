@@ -49,9 +49,24 @@ class Manage extends Component {
           return null;
         }
 
+        const colorMapping = ["YELLOW", "ORANGE", "RED"];
+        const color = _.reduce(
+          seat.defect,
+          (currentColor, eachDefect) => {
+            const color = eachDefect.color;
+            const currentValue = _.findIndex(colorMapping, currentColor);
+            const colorValue = _.findIndex(colorMapping, color);
+            if (colorValue >= currentValue) {
+              return color;
+            }
+            return currentColor;
+          },
+          ""
+        );
+
         return {
           number: mapping[index],
-          className: _.toLower(seat.status)
+          className: _.toLower(color)
         };
       });
     });
@@ -98,7 +113,9 @@ class Manage extends Component {
     const isAllChecked = this.isAllChecked();
     return (
       <div>
-        <header><h1 className="title">Flight Defects</h1></header>
+        <header>
+          <h1 className="title">Flight Defects</h1>
+        </header>
         <div className="flex-container">
           <div className="col seatmap-col">
             <SeatMap rows={this.renderRows()} maxReservableSeats={0} />
@@ -208,6 +225,7 @@ function defectData(flightData) {
       const seatLetter = mapping[seatNumber];
       const defectsWithLocation = _.map(defect, eachDefect => {
         return _.assign({}, eachDefect, {
+          status: eachDefect.color,
           location: `${rowNumber + 1}${seatLetter}`
         });
       });
