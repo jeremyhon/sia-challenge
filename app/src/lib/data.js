@@ -237,11 +237,36 @@ function generateLogData(NUMBER_OF_PLANES, NUMBER_OF_LOGS) {
     var oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth());
     return getRandomDate(oneYearAgo, today);
   }
+
+  function getRandomFlightNumberOf(ptype){
+    var x = Math.floor(Math.random() * NUMBER_OF_PLANES);
+    while (x % 3 !== ptype){
+      x = Math.floor(Math.random() * NUMBER_OF_PLANES);
+    }
+    return x;
+  }
   const LOG_DATA = [];
 
+  const planeNumbers = []
+  var j = 0;
+  for (var i = 0; i < PLANE_TYPES[0].columns * PLANE_TYPES[0].rows; i++){
+    planeNumbers[j] = 0;
+    j++;
+  }
+  for (var i = 0; i < PLANE_TYPES[1].columns * PLANE_TYPES[1].rows; i++){
+    planeNumbers[j] = 1;
+    j++;
+  }
+  for (var i = 0; i < PLANE_TYPES[2].columns * PLANE_TYPES[2].rows; i++){
+    planeNumbers[j] = 2;
+    j++;
+  }
+
   for (var i = 0; i < NUMBER_OF_LOGS; i++) {
-    var flightNumber = Math.floor(Math.random() * NUMBER_OF_PLANES);
+    var pTypeNumber = planeNumbers[Math.floor(Math.random() * planeNumbers.length)];
+    var flightNumber = getRandomFlightNumberOf(pTypeNumber);
     var pType = planeType(flightNumber);
+    console.log(`${pTypeNumber}, ${flightNumber}`);
     var today = new Date();
     var log = {
       type: pickRandomElement(
