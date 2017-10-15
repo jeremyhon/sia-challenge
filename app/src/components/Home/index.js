@@ -15,10 +15,11 @@ class Home extends Component {
   render() {
     return (
       <div className="home">
-        <h3>
+        <header><h3 className="title">
           Upcoming Flights for Soekarno-Hatta International Airport (CGK),
           Jakarta, Indonesia
-        </h3>
+          </h3>
+        </header>
         <ReactTable
           data={this.props.flights}
           columns={[

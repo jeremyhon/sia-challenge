@@ -1,3 +1,25 @@
 .home {
   text-align: center;
 }
+
+header {
+  background-color: #082767;
+}
+
+.title {
+  color: #FFF;
+  margin: 0;
+  padding: 0.6em;
+  width: 100%;
+  text-align: center;
+  font-size: 28px;
+}
+
+.rt-thead {
+  background-color: #EDA241;
+}
+
+.rt-tr-group:hover {
+  background-color: #DDD;
+  cursor: pointer;
+}
