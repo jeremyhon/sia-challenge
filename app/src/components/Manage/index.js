@@ -116,7 +116,9 @@ class Manage extends Component {
             <div className="subHeader">
               <h2>Seating Plan</h2>
             </div>
-            <SeatMap rows={this.renderRows()} maxReservableSeats={0} />
+            <div className="seats">
+              <SeatMap rows={this.renderRows()} maxReservableSeats={0} />
+            </div>
           </div>
           <div className="col defect-col">
             <div className="subHeader">

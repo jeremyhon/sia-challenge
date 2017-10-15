@@ -55,6 +55,7 @@ class Home extends Component {
           }}
           defaultPageSize={5}
           showPagination={false}
+          className="-striped -highlight"
         />
       </div>
     );
