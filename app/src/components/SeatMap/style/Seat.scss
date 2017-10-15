@@ -1,0 +1,27 @@
+.Seat {
+  background-color: #4caf50;
+  height: 35px;
+  width: 35px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  -webkit-border-top-left-radius: 10px;
+  -webkit-border-top-right-radius: 10px;
+}
+.Seat--enabled {
+  cursor: pointer;
+  &:hover {
+    background-color: #03a9f4;
+  }
+}
+
+.Seat--selected {
+  cursor: pointer;
+  background-color: #4caf50;
+}
+
+.Seat--reserved {
+  cursor: not-allowed;
+  background-color: #e0e0e0;
+}

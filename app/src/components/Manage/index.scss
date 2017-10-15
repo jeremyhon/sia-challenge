@@ -1,0 +1,59 @@
+.title {
+  width: 100%;
+  text-align: center;
+}
+
+.danger {
+  h2 {
+    color: #bb0000;
+  }
+}
+
+.attention {
+  h2 {
+    color: #bbbb00;
+  }
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.col {
+  flex: 0 1 auto;
+  margin: 15px;
+}
+
+.defect-col {
+}
+
+.checkbox {
+  margin: 0;
+}
+
+.Seat.red {
+  background-color: #dd0000;
+}
+
+.Seat.orange {
+  background-color: #f49541;
+}
+
+.Seat.yellow {
+  background-color: #ddd800;
+  color: #000000;
+}
+
+.rt-tr.red {
+  background-color: #dd0000;
+}
+
+.rt-tr.orange {
+  background-color: #f49541;
+}
+
+.rt-tr.yellow {
+  background-color: #ddd800;
+  color: #000000;
+}
