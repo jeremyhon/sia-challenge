@@ -247,7 +247,7 @@ function generateLogData(NUMBER_OF_PLANES, NUMBER_OF_LOGS) {
   }
   const LOG_DATA = [];
 
-  const planeNumbers = []
+  const planeNumbers = new Array((PLANE_TYPES[0].columns * PLANE_TYPES[0].rows) + (PLANE_TYPES[1].columns * PLANE_TYPES[1].rows) + (PLANE_TYPES[2].columns * PLANE_TYPES[2].rows));
   var j = 0;
   for (var i = 0; i < PLANE_TYPES[0].columns * PLANE_TYPES[0].rows; i++){
     planeNumbers[j] = 0;
