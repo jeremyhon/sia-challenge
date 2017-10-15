@@ -2,7 +2,7 @@ import _ from 'lodash'
 
 // CONST
 const PLANES = [];
-const NUMBER_OF_PLANES = 100;
+const NUMBER_OF_PLANES = 3;
 
 // seats
 const TYPES_OF_RED_DEFECTS = ["Reclining Seats", "Seat Belt"];
@@ -45,27 +45,97 @@ function itemsFor(type){
 }
 
 class Defect{
-  constructor(type, timestamp, status){
+  constructor(type){
     this.type = type;
-    this.timesDeferred = 0;
-    this.timestamp = timestamp;
-    this.status = status;
+    this.logs = [];
+  }
+
+  get status(){
+    var latestLog = this.logs.reduce((latest, log) => {
+      if (latest && latest.timestamp > log.timestamp){
+        return latest;
+      } else {
+        return log;
+      }
+    }, null);
+    if (latestLog){
+      return latestLog.status;
+    } else {
+      return "FIXED";
+    }
   }
 
   get color(){
-    return GREEN;
+    function withinMonth(lastFixedLog){
+      var actualDate = new Date();
+      var dateToCheck = new Date(lastFixedLog);
+      return dateToCheck.getMonth() == actualDate.getMonth()
+          && dateToCheck.getFullYear() == actualDate.getFullYear()
+    }
+
+    if (this.logs.length === 0){
+      return GREEN;
+    }
+    var latestLog = this.logs.reduce((latest, log) => {
+      if (latest.timestamp > log.timestamp){
+        return latest;
+      } else {
+        return log;
+      }
+    });
+    if (latestLog.status === "FIXED"){
+      if (withinMonth(latestLog)){
+        return YELLOW;
+      } else {
+        return GREEN;
+      }
+    } else {
+      return TYPES_OF_ORANGE_DEFECTS.includes(this.type) ? ORANGE : RED;
+    }
+
+  }
+
+  get timesDeferred(){
+    this.logs.sort((a, b) => {
+      return a.timestamp - b.timestamp;
+    });
+    var result = 0;
+    for (log of this.logs){
+      if (log.status === "FIXED"){
+        result = 0;
+      } else {
+        result++;
+      }
+    }
+    return result;
+  }
+
+  get timestamp(){
+    var latestLog = this.logs.reduce((latest, log) => {
+      if (latest && latest.timestamp > log.timestamp){
+        return latest;
+      } else {
+        return log;
+      }
+    }, null);
+    return latestLog.timestamp;
   }
 
   get items(){
     return itemsFor(this.type);
   }
 
+  addLog(log){
+    this.logs.push(log);
+  }
+
   toJson(){
     return {
       type: this.type,
       timesDeferred: this.timesDeferred,
+      color: this.color,
       timestamp: this.timestamp,
-      status: this.status
+      items: this.items
     }
   }
 }
@@ -75,40 +145,35 @@ class Seat{
     this.defects = defects;
     this.isAisle = isAisle;
   }
+
   toJson() {
     return {
-      defect: this.defect.map(d => d.toJson()),
+      defect: this.defects.filter(d => d.color !== GREEN).map(d => d.toJson()),
       isAisle: this.isAisle
     }
   }
-  get latestDefects() {
-    function latest(latest, defect){
-      if (latest && latest.timestamp > defect.timestamp){
-        return latest;
-      } else {
-        return defect;
-      }
+
+  get currentDefects(){
+    return this.defects.filter(d => d.status === "DEFECT");
+  }
+
+  defectOfType(type){
+    var defect = this.defects.filter(d => d.type === log.type);
+    if (defect.length > 0){
+      return defect[0];
+    } else {
+      return null;
     }
-    return this.defects.reduce((collected, defect) => {
-      var latestDefect = collected.filter(d => d.type === defect.type).reduce(latest, null);
-      if (latestDefect && latestDefect.timestamp > defect.timestamp){
-        return collected;
-      } else {
-        return collected.concat([defect]);
-      }
-    }, []);
   }
 
   updateWith(log) {
-    var defect = new Defect(log.type, log.timestamp, log.status);
-    var latestDefectsOfThisType = this.latestDefects.filter(d => d.type === log.type);
-    if (latestDefectsOfThisType){
-      console.log(`latest defects: ${latestDefectsOfThisType}`);
-      if (latestDefectsOfThisType[0].status !== "FIXED")){
-        defect.timesDeferred = latestDefectsOfThisType[0].timesDeferred + 1;
-      }
+    if (this.defectOfType(log.type)){
+      this.defectOfType(log.type).addLog(log);
+    } else {
+      var defect = new Defect(log.type);
+      defect.addLog(log);
+      this.defects.push(defect);
     }
-    this.defects.push(defect);
   }
 }
 
@@ -119,7 +184,9 @@ class Plane{
     this.seats = seats;
   }
   toJson(){
-    return this.seats;
+    return this.seats.map(row => {
+      return row.map(seat => seat.toJson());
+    });
   }
 }
 
@@ -193,122 +260,13 @@ function generatePlaneData(){
     var seatId = log.seat_number;
     PLANES[planeId].seats[getRow(seatId, planeId)][getCol(seatId, planeId)].updateWith(log);
   }
+  return PLANES;
 }
 
-function isFixed(datum){
-  return datum.status === STATUS_FIXED
+function getFlight(fakeFlightId){
+  generatePlaneData();
+  var flightId = Math.floor(Math.random() * (fakeFlightId % NUMBER_OF_PLANES));
+  return PLANES[flightId].toJson();
 }
 
-function isDefect(datum){
-  return datum.status === STATUS_DEFECT
-}
-
-function getColor(seatId, flightId){
-  function getScore(flight, seat, data){
-    function isFlight(flight_number){
-      return function(data){
-        return data.flight_number === flight_number;
-      }
-    }
-    function isSeat(seat_number){
-      return function(data){
-        return data.seat_number === seat_number;
-      }
-    }
-    function latest(data){
-      return data.reduce((latest, datum) => {
-        if (latest && latest.time > datum.time){
-          return latest;
-        } else {
-          return datum;
-        }
-      }, null);
-    }
-    function withinToday(lastFixedLog){
-      var actualDate = new Date();
-      var dateToCheck = new Date(lastFixedLog);
-      console.log(`now date: ${actualDate.getDate()}, month: ${actualDate.getMonth()}, year: ${actualDate.getFullYear()}`);
-      console.log(`before date: ${dateToCheck.getDate()}, month: ${dateToCheck.getMonth()}, year: ${dateToCheck.getFullYear()}`);
-      return dateToCheck.getDate() == actualDate.getDate()
-          && dateToCheck.getMonth() == actualDate.getMonth()
-          && dateToCheck.getFullYear() == actualDate.getFullYear()
-    }
-    function withinMonth(lastFixedLog){
-      var actualDate = new Date();
-      var dateToCheck = new Date(lastFixedLog);
-      return dateToCheck.getMonth() == actualDate.getMonth()
-          && dateToCheck.getFullYear() == actualDate.getFullYear()
-    }
-    var seatHistoricalData = data.filter(log => {
-      return (isFlight(flight))(log) && (isSeat(seat))(log);
-    });
-    var latestLog = latest(seatHistoricalData);
-    if (latestLog) {
-      if (isDefect(latestLog)){
-        return 1;
-      }
-      if (withinMonth(latestLog.time)){
-        return 0;
-      } else {
-        return 0.5;
-      }
-    } else {
-      return 0;
-    }
-  }
-
-  function isGreen(score){
-    return score === 0;
-  }
-  function isRed(score){
-    return score === 1;
-  }
-  var score = getScore(flightId, seatId, LOG_DATA);
-  if (isGreen(score)) return "GREEN";
-  if (isRed(score)) return "RED";
-  return "YELLOW";
-}
-
-function getDefects(seatId, flightId){
-  function isFlight(flight_number){
-    return function(data){
-      return data.flight_number === flight_number;
-    }
-  }
-  function isSeat(seat_number){
-    return function(data){
-      return data.seat_number === seat_number;
-    }
-  }
-  var seatHistoricalData = data.filter(log => {
-    return (isFlight(flight))(log) && (isSeat(seat))(log);
-  });
-
-}
-
-/**
-takes in flight number,
-returns 2d array of seats
-**/
-function getFlight(flightId) {
-  function getPlaneType(flightId){
-    return PLANE_TYPES[flightId % PLANE_TYPES.length];
-  }
-  function getSeatId(r, c, planeType){
-    return c + (r * planeType.columns);
-  }
-  var arr = [][];
-  var planeType = getPlaneType(flightId);
-  for (var r = 0; r < planeType.rows; r++){
-    for (var c = 0; c < planeType.columns; c++){
-      var seatId = getSeatId(r, c, planeType(flightId));
-      var status = getColor(seatId, flightId);
-      var defects = status === "GREEN" ? [] : getDefects(seatId, flightId);
-      var isAisle = planeType.aisleColumns.includes(c);
-      arr[r][c] = new Seat(defects, status, isAisle).toJson();
-    }
-  }
-  return arr;
-}
-
-export default getColor
+export default getFlight
