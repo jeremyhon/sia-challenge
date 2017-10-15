@@ -162,8 +162,9 @@ class Seat {
   }
 
   toJson() {
+    var isAisle = this.isAisle;
     return {
-      defect: this.defects.filter(d => d.color !== GREEN).map(d => d.toJson()),
+      defect: isAisle ? [] : this.defects.filter(d => d.color !== GREEN).map(d => d.toJson()),
       isAisle: this.isAisle
     };
   }
