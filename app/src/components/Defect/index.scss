@@ -1,0 +1,18 @@
+.defect {
+  .flex-container {
+    flex-direction: column;
+    margin: auto;
+    width: 50%;
+  }
+  .line-item {
+    margin-top: 20px;
+    display: flex;
+    flex: 1 0 auto;
+    width: 100%;
+  }
+}
+.left-align {
+  padding-left: 30px;
+  text-align: left;
+  width: 100%;
+}
