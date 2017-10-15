@@ -41,6 +41,10 @@ header {
   width: 40%;
 }
 
+.items-col {
+  width: 25%;
+}
+
 .checkbox {
   margin: 0;
 }
@@ -54,7 +58,7 @@ header {
 }
 
 .Seat.yellow {
-  background-color: #ddd800;
+  background-color: #d4d81c;
   color: #000000;
 }
 
@@ -69,4 +73,12 @@ header {
   -webkit-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
+}
+
+.rt-td.right-align {
+  text-align: right;
+}
+
+.rt-td.center-align {
+  text-align: center;
 }

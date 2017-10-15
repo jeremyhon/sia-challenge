@@ -122,7 +122,8 @@ class Manage extends Component {
               columns={[
                 {
                   Header: "Type",
-                  accessor: "type"
+                  accessor: "type",
+                  minWidth: 150
                 },
                 {
                   Header: "Location",
@@ -130,7 +131,12 @@ class Manage extends Component {
                 },
                 {
                   Header: "Times Deferred",
-                  accessor: "timesDeferred"
+                  accessor: "timesDeferred",
+                  getProps: (state, rowInfo) => {
+                    return {
+                      className: "right-align"
+                    };
+                  }
                 },
                 {
                   Header: "Status",
@@ -142,7 +148,7 @@ class Manage extends Component {
                       case "ORANGE":
                         return "Minor";
                       case "YELLOW":
-                        return "Pending";
+                        return "Potential";
                     }
                   },
                   Cell: row => (
@@ -159,7 +165,12 @@ class Manage extends Component {
                       </span>
                       {row.value}
                     </span>
-                  )
+                  ),
+                  getProps: (state, rowInfo) => {
+                    return {
+                      className: "center-align"
+                    };
+                  }
                 },
                 {
                   Header: HeaderCheckBox,
@@ -175,6 +186,7 @@ class Manage extends Component {
                   getProps: (state, rowInfo) => {
                     if (rowInfo) {
                       return {
+                        style: { textAlign: "center" },
                         checked: rowInfo.original.checked,
                         onClick: this.handleRowCheck(rowInfo)
                       };
@@ -197,7 +209,16 @@ class Manage extends Component {
               data={this.getItems()}
               columns={[
                 { Header: "Name", accessor: "name" },
-                { Header: "Qty", accessor: "qty" }
+                {
+                  Header: "Qty",
+                  accessor: "qty",
+                  width: 100,
+                  getProps: (state, rowInfo) => {
+                    return {
+                      className: "right-align"
+                    };
+                  }
+                }
               ]}
               className="-striped -highlight"
             />

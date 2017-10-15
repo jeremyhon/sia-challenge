@@ -15,9 +15,10 @@ class Home extends Component {
   render() {
     return (
       <div className="home">
-        <header><h3 className="title">
-          Upcoming Flights for Soekarno-Hatta International Airport (CGK),
-          Jakarta, Indonesia
+        <header>
+          <h3 className="title">
+            Upcoming Flights for Soekarno-Hatta International Airport (CGK),
+            Jakarta, Indonesia
           </h3>
         </header>
         <ReactTable
