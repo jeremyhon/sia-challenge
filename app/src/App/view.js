@@ -6,7 +6,7 @@ import Login from "../components/Login";
 import { loginUser } from "../components/Login/actions";
 import Manage from "../components/Manage";
 import Home from "../components/Home";
-import getPlane from "../lib/data";
+import getPlanes from "../lib/data";
 import "../style/index.scss";
 
 // Mocks
@@ -14,6 +14,10 @@ const WillMatch = () => <h1>WillMatch</h1>;
 const NoMatch = () => <h1>NoMatch</h1>;
 
 class App extends Component {
+  state = {
+    data: getPlanes(5)
+  };
+
   render() {
     const { dispatch, isAuthenticated, error } = this.props;
     return (
@@ -24,11 +28,13 @@ class App extends Component {
               <Route
                 path="/"
                 exact
-                render={() => <Home getPlane={getPlane} />}
+                render={() => <Home flights={this.state.data} />}
               />
               <Route
-                path="/manage"
-                render={() => <Manage flightData={flightData} />}
+                path="/manage/:id"
+                render={props => (
+                  <Manage {...props} flights={this.state.data} />
+                )}
               />
               <Route component={NoMatch} />
             </Switch>

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import _ from "lodash";
 import SeatMap from "../SeatMap";
 import ReactTable from "react-table";
@@ -7,11 +8,27 @@ import "./index.scss";
 import HeaderCheckBox, { CellCheckBox } from "./Checkbox";
 
 class Manage extends Component {
-  state = {
-    defects: defectData(this.props.flightData),
-    items: [],
-    checked: []
+  static propTypes = {
+    flights: PropTypes.array.isRequired,
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        id: PropTypes.string.isRequired
+      })
+    }).isRequired
   };
+
+  componentWillMount = () => {
+    const flight = this.props.flights[this.props.match.params.id];
+    const defects = defectData(flight.seats);
+    this.setState({
+      defects,
+      seats: flight.seats,
+      items: [],
+      checked: []
+    });
+  };
+
+  state = {};
 
   handleRowCheck = rowInfo => () => {
     const defects = _.map(this.state.defects, defect => {
@@ -23,32 +40,15 @@ class Manage extends Component {
     this.setState({ defects });
   };
 
-  renderFailures() {
-    const failures = _.filter(data, { status: "failure" });
-    return _.map(failures, (item, index) => (
-      <li key={index}>
-        {item.type}:{item.number}
-      </li>
-    ));
-  }
-
-  renderAttention() {
-    const watch = _.filter(data, { status: "watch" });
-    return _.map(watch, (item, index) => (
-      <li key={index}>
-        {item.type}:{item.number}
-      </li>
-    ));
-  }
-
   renderRows() {
-    return _.map(this.props.flightData, row => {
+    return _.map(this.state.seats, row => {
       const rowLength = row.length;
       const mapping = _.find(seatMappings, { length: rowLength }).mapping;
       return _.map(row, (seat, index) => {
-        if (seat.aisle) {
+        if (seat.isAisle) {
           return null;
         }
+
         return {
           number: mapping[index],
           className: _.toLower(seat.status)
@@ -201,14 +201,13 @@ function defectData(flightData) {
   const rowLength = flightData[0].length;
   const mapping = _.find(seatMappings, { length: rowLength }).mapping;
   _.each(flightData, (row, rowNumber) => {
-    _.each(row, ({ aisle, defects, status }, seatNumber) => {
+    _.each(row, ({ aisle, defect }, seatNumber) => {
       if (aisle) {
         return;
       }
       const seatLetter = mapping[seatNumber];
-      const defectsWithLocation = _.map(defects, defect => {
-        return _.assign({}, defect, {
-          status,
+      const defectsWithLocation = _.map(defect, eachDefect => {
+        return _.assign({}, eachDefect, {
           location: `${rowNumber + 1}${seatLetter}`
         });
       });
