@@ -190,8 +190,8 @@ class Plane{
       seats: this.seats.map(row => {
         return row.map(seat => seat.toJson());
       }),
-      arrival: arrival,
-      departure: departure
+      arrival: this.arrival,
+      departure: this.departure
     }
   }
 }
@@ -272,14 +272,14 @@ function generatePlaneData(){
         seats[r][c] = new Seat([], GREEN, planeType.aisleColumns.includes(c));
       }
     }
-    var arrivalTime = pickRandomTimeInNextMonth(now).getTime();
-    var departureTime = pickRandomTimeInNextMonth(arrivalTime).getTime();
+    var arrival = getRandomTimeInNext24Hours(now);
+    var departure = getRandomTimeInNext24Hours(arrival);
     PLANES.push(new Plane(
       i,
       getPlaneType(i),
       seats,
-      arrivalTime,
-      departureTime
+      arrival.getTime(),
+      departure.getTime()
     ));
   }
   for (log of LOG_DATA){
