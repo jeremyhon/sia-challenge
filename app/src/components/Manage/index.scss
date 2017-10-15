@@ -53,6 +53,19 @@ header {
   color: #000000;
 }
 
+.rt-thead {
+  font-weight: bold;
+  height: 100%;
+}
+
+.rt-thead.rt-tr {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
 .rt-tr.red {
   background-color: #dd0000;
 }
