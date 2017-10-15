@@ -98,7 +98,7 @@ class Manage extends Component {
     const isAllChecked = this.isAllChecked();
     return (
       <div>
-        <h1 className="title">Flight defects</h1>
+        <header><h1 className="title">Flight Defects</h1></header>
         <div className="flex-container">
           <div className="col seatmap-col">
             <SeatMap rows={this.renderRows()} maxReservableSeats={0} />
