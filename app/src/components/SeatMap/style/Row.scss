@@ -1,15 +1,17 @@
 .Row {
-    font-family: "Helvetica";
-    margin-bottom: 10px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  font-family: "Helvetica";
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .Row--enabled {
-    &:hover { background-color: #F5F5F5; }
+  &:hover {
+    background-color: #f5f5f5;
+  }
 }
 
 .Row--selected {
-    background-color: #F5F5F5;
+  background-color: #f5f5f5;
 }
