@@ -17,6 +17,7 @@ module.exports = {
   devtool: "source-map",
   entry: ["babel-polyfill", "react-hot-loader/patch", "./src/index.js"],
   output: {
+    publicPath: "/",
     path: path.resolve(DIST_URL),
     filename: "bundle.js"
   },

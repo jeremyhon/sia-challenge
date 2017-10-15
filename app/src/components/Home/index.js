@@ -1,22 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Switch,
-  Redirect
-} from "react-router-dom";
+import { Route, Link, Switch, Redirect, withRouter } from "react-router-dom";
 import ReactTable from "react-table";
+import _ from "lodash";
+import moment from "moment";
 import "./index.scss";
 
 class Home extends Component {
   static propTypes = {
-    getPlane: PropTypes.func.isRequired
-  };
-
-  state = {
-    flights: _.times(5, this.props.getPlane(_.random(0, 1000)))
+    flights: PropTypes.array.isRequired,
+    history: PropTypes.object.isRequired
   };
 
   render() {
@@ -27,17 +20,44 @@ class Home extends Component {
           Jakarta, Indonesia
         </h3>
         <ReactTable
-          data={this.state.flights}
+          data={this.props.flights}
           columns={[
-            { Header: "Flight Number" },
-            { Header: "Flight ID" },
-            { Header: "Departure" },
-            { Header: "Arrival" }
+            {
+              Header: "Plane ID",
+              accessor: "planeId"
+            },
+            {
+              Header: "Flight Number",
+              accessor: "flightNumber"
+            },
+            {
+              Header: "Arrival",
+              id: "arrival",
+              accessor: data => {
+                return moment(data.arrival).format("h:mm:ss a Do MMM YY");
+              }
+            },
+            {
+              Header: "Departure",
+              id: "departure",
+              accessor: data => {
+                return moment(data.departure).format("h:mm:ss a Do MMM YY");
+              }
+            }
           ]}
+          getTrProps={(state, rowInfo) => {
+            return {
+              onClick: e => {
+                this.props.history.push({
+                  pathname: `/manage/${rowInfo.original.planeId}`
+                });
+              }
+            };
+          }}
         />
       </div>
     );
   }
 }
 
-export default Home;
+export default withRouter(Home);
