@@ -16,8 +16,9 @@ class Home extends Component {
   render() {
     return (
       <div className="home">
-        <Header title="Upcoming Flights for Soekarno-Hatta International Airport (CGK),
-        Jakarta, Indonesia" />
+        <Header title="Defect Detective" />
+        <div><h3>Upcoming Flights for Soekarno-Hatta International Airport (CGK),
+        Jakarta, Indonesia</h3></div>
         <ReactTable
           data={this.props.flights}
           columns={[
