@@ -1,11 +1,25 @@
 import React from "react";
 
-const CheckBox = ({ checked, onClick }) => (
-  <div className="checkbox">
-    <label>
-      <input type="checkbox" checked={checked} onChange={onClick} />
-    </label>
-  </div>
-);
+export const CellCheckBox = props => {
+  const { checked, onClick } = props.columnProps.rest;
+  return (
+    <div className="checkbox">
+      <label>
+        <input type="checkbox" checked={checked} onChange={onClick} />
+      </label>
+    </div>
+  );
+};
 
-export default CheckBox;
+const HeaderCheckBox = props => {
+  const { checked, onClick } = props.column.getHeaderProps();
+  return (
+    <div className="checkbox">
+      <label>
+        <input type="checkbox" checked={checked} onChange={onClick} />
+      </label>
+    </div>
+  );
+};
+
+export default HeaderCheckBox;

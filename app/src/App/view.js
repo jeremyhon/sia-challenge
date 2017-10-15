@@ -21,7 +21,10 @@ class App extends Component {
           <div id="content-container">
             <Switch>
               <Route path="/" exact component={Home} />
-              <Route path="/manage" component={Manage} />
+              <Route
+                path="/manage"
+                render={() => <Manage flightData={flightData} />}
+              />
               {/* <Route path="/defect" component={Defect} /> */}
               <Route component={NoMatch} />
             </Switch>
@@ -43,3 +46,98 @@ function mapStateToProps(state) {
 }
 
 export default withRouter(connect(mapStateToProps)(App));
+
+const flightData = [
+  [
+    {
+      defects: [
+        {
+          type: "Reclining Seat",
+          items: [{ "5mm Hex Bolt": 1 }],
+          deferred: 1
+        }
+      ],
+      aisle: false,
+      status: "RED"
+    },
+    {
+      aisle: false,
+      status: "GREEN",
+      defects: []
+    },
+    {
+      aisle: false,
+      status: "GREEN",
+      defects: []
+    },
+    {
+      aisle: true,
+      status: "GREEN",
+      defects: []
+    },
+    {
+      aisle: false,
+      status: "GREEN",
+      defects: []
+    },
+    {
+      aisle: false,
+      status: "GREEN",
+      defects: []
+    },
+    {
+      aisle: false,
+      status: "GREEN",
+      defects: []
+    }
+  ],
+  [
+    {
+      aisle: false,
+      status: "GREEN",
+      defects: []
+    },
+    {
+      defects: [
+        {
+          type: "Tray Table",
+          items: [{ Tray: 1 }],
+          deferred: 0
+        }
+      ],
+      aisle: false,
+      status: "ORANGE"
+    },
+    {
+      aisle: false,
+      status: "GREEN",
+      defects: []
+    },
+    {
+      aisle: true,
+      status: "GREEN",
+      defects: []
+    },
+    {
+      aisle: false,
+      status: "GREEN",
+      defects: []
+    },
+    {
+      defects: [
+        {
+          type: "Tray Table",
+          items: [{ Tray: 1 }],
+          deferred: 0
+        }
+      ],
+      aisle: false,
+      status: "YELLOW"
+    },
+    {
+      aisle: false,
+      status: "GREEN",
+      defects: []
+    }
+  ]
+];

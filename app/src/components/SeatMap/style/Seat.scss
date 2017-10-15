@@ -9,19 +9,6 @@
   -webkit-border-top-left-radius: 10px;
   -webkit-border-top-right-radius: 10px;
 }
-
-.Seat.red {
-  background-color: #c42525;
-}
-
-.Seat.orange {
-  background-color: #f49541;
-}
-
-.Seat.yellow {
-  background-color: #f1f442;
-}
-
 .Seat--enabled {
   cursor: pointer;
   &:hover {

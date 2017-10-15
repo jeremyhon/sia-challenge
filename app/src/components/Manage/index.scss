@@ -28,5 +28,32 @@
 .defect-col {
 }
 
+.checkbox {
+  margin: 0;
+}
+
+.Seat.red {
+  background-color: #dd0000;
+}
+
+.Seat.orange {
+  background-color: #f49541;
+}
+
+.Seat.yellow {
+  background-color: #ddd800;
+  color: #000000;
+}
+
 .rt-tr.red {
+  background-color: #dd0000;
+}
+
+.rt-tr.orange {
+  background-color: #f49541;
+}
+
+.rt-tr.yellow {
+  background-color: #ddd800;
+  color: #000000;
 }
