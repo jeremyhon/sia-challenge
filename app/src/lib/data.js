@@ -1,5 +1,5 @@
 import _ from "lodash";
-
+var json2csv = require('json2csv');
 
 // seats
 const TYPES_OF_RED_DEFECTS = ["Reclining Seats", "Seat Belt"];
@@ -18,7 +18,6 @@ const RED = "RED";
 // logs
 var STATUS_FIXED = "FIXED";
 var STATUS_DEFECT = "DEFECT";
-const NUMBER_OF_LOGS = 1000;
 const TYPES_OF_STATUS = [STATUS_FIXED, STATUS_DEFECT];
 
 // CLASSES
@@ -208,43 +207,43 @@ const PLANE_TYPES = [
   new PlaneType(50, 12, [3, 8])
 ];
 
-function generatePlaneData(NUMBER_OF_PLANES) {
-  function generateLogData() {
-    function pickRandomElement(arr) {
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
-    function planeType(flightNumber) {
-      return PLANE_TYPES[flightNumber % PLANE_TYPES.length];
-    }
-    function pickRandomTimeWithinLastYear(today) {
-      function getRandomDate(from, to) {
-        from = from.getTime();
-        to = to.getTime();
-        return new Date(from + Math.random() * (to - from));
-      }
-      var oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth());
-      return getRandomDate(oneYearAgo, today);
-    }
-    const LOG_DATA = [];
-
-    for (var i = 0; i < NUMBER_OF_LOGS; i++) {
-      var flightNumber = Math.floor(Math.random() * NUMBER_OF_PLANES);
-      var pType = planeType(flightNumber);
-      var today = new Date();
-      var log = {
-        type: pickRandomElement(
-          TYPES_OF_RED_DEFECTS.concat(TYPES_OF_ORANGE_DEFECTS)
-        ),
-        flight_number: flightNumber,
-        seat_number: Math.floor(Math.random() * pType.numberOfSeats),
-        timestamp: pickRandomTimeWithinLastYear(today).getTime(),
-        status: pickRandomElement(TYPES_OF_STATUS)
-      };
-      LOG_DATA.push(log);
-    }
-    return LOG_DATA;
+function generateLogData(NUMBER_OF_PLANES, NUMBER_OF_LOGS) {
+  function pickRandomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
   }
+  function planeType(flightNumber) {
+    return PLANE_TYPES[flightNumber % PLANE_TYPES.length];
+  }
+  function pickRandomTimeWithinLastYear(today) {
+    function getRandomDate(from, to) {
+      from = from.getTime();
+      to = to.getTime();
+      return new Date(from + Math.random() * (to - from));
+    }
+    var oneYearAgo = new Date(today.getFullYear() - 1, today.getMonth());
+    return getRandomDate(oneYearAgo, today);
+  }
+  const LOG_DATA = [];
 
+  for (var i = 0; i < NUMBER_OF_LOGS; i++) {
+    var flightNumber = Math.floor(Math.random() * NUMBER_OF_PLANES);
+    var pType = planeType(flightNumber);
+    var today = new Date();
+    var log = {
+      type: pickRandomElement(
+        TYPES_OF_RED_DEFECTS.concat(TYPES_OF_ORANGE_DEFECTS)
+      ),
+      flight_number: flightNumber,
+      seat_number: Math.floor(Math.random() * pType.numberOfSeats),
+      timestamp: pickRandomTimeWithinLastYear(today).getTime(),
+      status: pickRandomElement(TYPES_OF_STATUS)
+    };
+    LOG_DATA.push(log);
+  }
+  return LOG_DATA;
+}
+
+function generatePlaneData(NUMBER_OF_PLANES) {
   function getPlaneType(flightId) {
     return PLANE_TYPES[flightId % PLANE_TYPES.length];
   }
@@ -278,7 +277,8 @@ function generatePlaneData(NUMBER_OF_PLANES) {
   }
 
   const PLANES = [];
-  const LOG_DATA = generateLogData();
+  const NUMBER_OF_LOGS = 1000;
+  const LOG_DATA = generateLogData(NUMBER_OF_PLANES, NUMBER_OF_LOGS);
   LOG_DATA.sort((a, b) => {
     return a.timestamp - b.timestamp;
   });
@@ -296,7 +296,7 @@ function generatePlaneData(NUMBER_OF_PLANES) {
     }
     var arrival = getRandomTimeInNext24Hours(now);
     var departure = getRandomTimeInNext24Hours(arrival);
-    var flightNumber = _.random(0, 10000000000);
+    var flightNumber = "SQ" + _.random(0, 10000000000);
     PLANES.push(
       new Plane(
         i,
@@ -322,6 +322,15 @@ function getPlanes(numberOfPlanes) {
   return generatePlaneData(numberOfPlanes).map(plane => plane.toJson());
 }
 
+function getCSV(NUMBER_OF_PLANES, NUMBER_OF_LOGS){
+  var logs = generateLogData(NUMBER_OF_PLANES, NUMBER_OF_LOGS);
+  var fields = ['type', 'plane_id', 'seat_number', 'timestamp', 'status'];
+  var result = json2csv({ data: logs, fields: fields });
+  return result;
+}
+
 window.getPlanes = getPlanes;
+window.generateLogData = generateLogData;
+window.getCSV = getCSV;
 
 export default getPlanes;
