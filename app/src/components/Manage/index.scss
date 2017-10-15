@@ -3,12 +3,16 @@ header {
 }
 
 .title {
-  color: #FFF;
+  color: #fff;
   margin: 0;
   padding: 0.6em;
   width: 100%;
   text-align: center;
   font-size: 28px;
+}
+
+.checkbox {
+  margin: 0;
 }
 
 .danger {
@@ -34,6 +38,7 @@ header {
 }
 
 .defect-col {
+  width: 40%;
 }
 
 .checkbox {
@@ -64,17 +69,4 @@ header {
   -webkit-transform: translateY(-50%);
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
-}
-
-.rt-tr.red {
-  background-color: #dd0000;
-}
-
-.rt-tr.orange {
-  background-color: #f49541;
-}
-
-.rt-tr.yellow {
-  background-color: #ddd800;
-  color: #000000;
 }

@@ -7,6 +7,8 @@ import "react-table/react-table.css";
 import "./index.scss";
 import HeaderCheckBox, { CellCheckBox } from "./Checkbox";
 
+const colorMapping = ["YELLOW", "ORANGE", "RED"];
+
 class Manage extends Component {
   static propTypes = {
     flights: PropTypes.array.isRequired,
@@ -49,7 +51,6 @@ class Manage extends Component {
           return null;
         }
 
-        const colorMapping = ["YELLOW", "ORANGE", "RED"];
         const color = _.reduce(
           seat.defect,
           (currentColor, eachDefect) => {
@@ -82,7 +83,7 @@ class Manage extends Component {
         });
       }
     });
-    items = _.countBy(items, _.identity);
+    items = _.countBy(items);
     return _.map(items, (qty, name) => ({ name, qty }));
   }
 
@@ -111,6 +112,7 @@ class Manage extends Component {
         </header>
         <div className="flex-container">
           <div className="col seatmap-col">
+            <h2>Seating Plan</h2>
             <SeatMap rows={this.renderRows()} maxReservableSeats={0} />
           </div>
           <div className="col defect-col">
@@ -124,19 +126,17 @@ class Manage extends Component {
                 },
                 {
                   Header: "Location",
-                  accessor: "location",
-                  maxWidth: 50
+                  accessor: "location"
                 },
                 {
                   Header: "Times Deferred",
-                  accessor: "deferred",
-                  maxWidth: 50
+                  accessor: "timesDeferred"
                 },
                 {
                   Header: "Status",
                   id: "status",
                   accessor: data => {
-                    switch (data.status) {
+                    switch (data.color) {
                       case "RED":
                         return "Major";
                       case "ORANGE":
@@ -144,13 +144,28 @@ class Manage extends Component {
                       case "YELLOW":
                         return "Pending";
                     }
-                  }
+                  },
+                  Cell: row => (
+                    <span>
+                      <span
+                        style={{
+                          color:
+                            row.value === "Major"
+                              ? "#dd0000"
+                              : row.value === "Minor" ? "#f49541" : "#ddd800"
+                        }}
+                      >
+                        &#x25cf;&nbsp;
+                      </span>
+                      {row.value}
+                    </span>
+                  )
                 },
                 {
                   Header: HeaderCheckBox,
                   accessor: "",
                   Cell: CellCheckBox,
-                  maxWidth: 50,
+                  maxWidth: 40,
                   getHeaderProps: () => {
                     return {
                       onClick: this.handleHeaderCheck.bind(this),
@@ -173,6 +188,7 @@ class Manage extends Component {
                   className: _.toLower(_.get(rowInfo, "original.status"))
                 };
               }}
+              className="-striped -highlight"
             />
           </div>
           <div className="col items-col">
@@ -183,6 +199,7 @@ class Manage extends Component {
                 { Header: "Name", accessor: "name" },
                 { Header: "Qty", accessor: "qty" }
               ]}
+              className="-striped -highlight"
             />
           </div>
         </div>
@@ -228,6 +245,10 @@ function defectData(flightData) {
   defectData = _.map(defectData, (defectDatum, id) => {
     defectDatum.id = id;
     return defectDatum;
+  });
+  defectData = _.sortBy(defectData, ({ color }) => {
+    const v = 3 - _.indexOf(colorMapping, color);
+    return v;
   });
   return defectData;
 }
