@@ -70,10 +70,9 @@ class Defect {
     function withinMonth(lastFixedLog) {
       var actualDate = new Date();
       var dateToCheck = new Date(lastFixedLog);
-      return (
-        dateToCheck.getMonth() == actualDate.getMonth() &&
-        dateToCheck.getFullYear() == actualDate.getFullYear()
-      );
+      console.log(`within month: ${actualDate}, ${dateToCheck}`);
+      return dateToCheck.getMonth() == actualDate.getMonth() &&
+        dateToCheck.getFullYear() == actualDate.getFullYear();
     }
 
     if (this.logs.length === 0) {
@@ -87,7 +86,7 @@ class Defect {
       }
     });
     if (latestLog.status === "FIXED") {
-      if (withinMonth(latestLog)) {
+      if (withinMonth(latestLog.timestamp)) {
         return YELLOW;
       } else {
         return GREEN;
