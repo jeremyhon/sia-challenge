@@ -1,5 +1,11 @@
 .home {
   text-align: center;
+
+  .rt-tr-group:hover {
+    background-color: #DDD;
+    cursor: pointer;
+  }
+
 }
 
 header {
@@ -17,9 +23,4 @@ header {
 
 .rt-thead {
   background-color: #EDA241;
-}
-
-.rt-tr-group:hover {
-  background-color: #DDD;
-  cursor: pointer;
 }
