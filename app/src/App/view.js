@@ -6,6 +6,7 @@ import Login from "../components/Login";
 import { loginUser } from "../components/Login/actions";
 import Manage from "../components/Manage";
 import Home from "../components/Home";
+import Defect from "../components/Defect";
 import getPlanes from "../lib/data";
 import "../style/index.scss";
 
@@ -36,6 +37,7 @@ class App extends Component {
                   <Manage {...props} flights={this.state.data} />
                 )}
               />
+              <Route path="/defect" render={props => <Defect {...props} />} />
               <Route component={NoMatch} />
             </Switch>
           </div>
